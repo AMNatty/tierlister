@@ -1,0 +1,101 @@
+.tl-tier-container
+{
+    margin-bottom: 2px;
+    display: block;
+    background-color: #111111;
+    color: white;
+
+    & table
+    {
+        padding: 0;
+        margin: 0;
+        & tr
+        {
+            height: 100%;
+
+            & td
+            {
+                height: 100%;
+
+                & div.tl-tier-controls-container
+                {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+
+                    & .tl-tier-control-item
+                    {
+                        flex-grow: 1;
+                        color: inherit;
+                        text-align: center;
+                        cursor: pointer;
+                        user-select: none;
+                        background-color: transparent !important;
+
+                        &.tl-tier-control-bright:active
+                        {
+                            color: #333333 !important;
+                        }
+
+                        &.tl-tier-control-dark:active
+                        {
+                            color: #ffffff !important;
+                        }
+                    }
+                }
+                
+                &.tl-tier-head
+                {
+                    background-image: url('../img/icons/tier_head_reflection.png');
+                    background-position: top left;
+                    background-repeat: no-repeat;
+
+                    padding: 2px;
+
+                    & .tl-tier-name
+                    {
+                        &[contentEditable=true]:empty/*:not(:focus)*/::before
+                        {
+                            content: attr(data-placeholder);
+                            font-style: italic;
+                            opacity: 0.5;
+                        };
+
+                        width: 76px;
+                        overflow-wrap: break-word;
+                        color: inherit;
+                        display: inline-block;
+                        vertical-align: middle;
+                        text-align: center;
+
+                        &:active, &:focus, &:hover
+                        {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+
+                & .tl-tier-filler
+                {
+                    width: 80px;
+                    height: 0px;
+                }
+            }
+        }
+    }
+
+
+
+    & ul.tl-tier
+    {
+        padding: 5px;
+        margin: 0;
+        padding: 0;
+
+        & li
+        {
+            vertical-align: top;
+            display: inline-block;
+        }
+    }
+}

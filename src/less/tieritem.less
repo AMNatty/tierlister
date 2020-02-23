@@ -1,0 +1,52 @@
+& .tier-item
+{
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    border: 1px solid white;
+
+    background-color: black;
+    color: white;
+    display: inline-block;
+    box-sizing: border-box;
+    height: 90px;
+    min-width: 80px;
+    margin: 0;
+    margin-right: 2px;
+
+    max-width: 160px;
+
+    & .tier-item-inner
+    {
+        display: inline-block;
+    
+        margin: 0px;
+        box-sizing: border-box;
+        width: 100%;
+
+        padding: 5px;
+        background-image: linear-gradient(to bottom, black, transparent);
+
+        & .tier-item-link-container
+        {
+            box-sizing: border-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        & a, & a:link, & a:visited, & a:active
+        {
+            color: white;
+            text-decoration: none;
+
+            &:hover
+            {
+                text-decoration: underline;
+            }
+        }
+    }
+}
