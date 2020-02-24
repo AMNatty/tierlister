@@ -169,9 +169,9 @@ function editorTransform(state: IState = {
 
 function classObjectizer(store)
 {
-    return function (next)
+    return function(next)
     {
-        return function (action)
+        return function(action)
         {
             return next({...action});
         }

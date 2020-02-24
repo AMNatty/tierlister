@@ -14,63 +14,7 @@ import { TierListEntry } from '../data/itementry';
 
 import { Droppable } from 'react-beautiful-dnd';
 
-function isBright(hex)
-{
-    if (hex.indexOf('#') === 0) {
-        hex = hex.slice(1);
-    }
-
-    // convert 3-digit hex to 6-digits.
-    if (hex.length === 3) {
-        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    }
-
-    if (hex.length !== 6) {
-        throw new Error('Invalid HEX color.');
-    }
-
-    var r = parseInt(hex.slice(0, 2), 16),
-        g = parseInt(hex.slice(2, 4), 16),
-        b = parseInt(hex.slice(4, 6), 16);
-
-    return (r * 0.299 + g * 0.587 + b * 0.114) > 140;
-}
-
-function padZero(num: string)
-{
-    return num.length === 1 ? "0" + num : num;
-}
-
-function invertColor(hex, bw) {
-    if (hex.indexOf('#') === 0) {
-        hex = hex.slice(1);
-    }
-    // convert 3-digit hex to 6-digits.
-    if (hex.length === 3) {
-        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    }
-    if (hex.length !== 6) {
-        throw new Error('Invalid HEX color.');
-    }
-    
-    let r: number = parseInt(hex.slice(0, 2), 16);
-    let g: number = parseInt(hex.slice(2, 4), 16);
-    let b: number = parseInt(hex.slice(4, 6), 16);
-
-    if (bw)
-    {
-        // http://stackoverflow.com/a/3943023/112731
-        return (r * 0.299 + g * 0.587 + b * 0.114) > 140 ? '#000000' : '#FFFFFF';
-    }
-
-    // invert color components
-    let invR: string = (255 - r).toString(16);
-    let invG: string = (255 - g).toString(16);
-    let invB: string = (255 - b).toString(16);
-
-    // pad each with zeros and return
-    return "#" + padZero(invR) + padZero(invG) + padZero(invB);
-}
+import { rgbToLuminance, parseHexCode, binaryThreshold, invertColor, IRGBColor, toHex } from '../util/colorutil';
 
 class TierRow extends React.Component <{    
     tierRenameCallback: Function,
@@ -121,14 +65,18 @@ class TierRow extends React.Component <{
 
     render()
     {
-        let controlClasses = `tl-tier-control-item ${isBright(this.props.tierData.color) ? 'tl-tier-control-bright' : 'tl-tier-control-dark' }`;
+        const color: IRGBColor = parseHexCode(this.props.tierData.color);
+        const threshold: number = 140;
+        const foregroundColor: IRGBColor = binaryThreshold(invertColor(color), threshold);
+
+        const controlClasses = `tl-tier-control-item ${rgbToLuminance(color) > threshold ? 'tl-tier-control-bright' : 'tl-tier-control-dark' }`;
 
         return (
             <div className="tl-tier-container">
                 <table>
                     <tbody>
                         <tr>
-                            <td className="tl-tier-controls" style={{ color: this.props.tierData.color, backgroundColor: invertColor(this.props.tierData.color, true) }}>
+                            <td className="tl-tier-controls" style={{ color: this.props.tierData.color, backgroundColor: toHex(foregroundColor) }}>
                                 <div className="tl-tier-controls-container">
                                     <div className={controlClasses} onClick={this.moveRowUp.bind(this)}>
                                         ▲
@@ -143,7 +91,7 @@ class TierRow extends React.Component <{
                                     </div>
                                 </div>
                             </td>
-                            <td className="tl-tier-head" style={{ backgroundColor: this.props.tierData.color, color: invertColor(this.props.tierData.color, true) }}>
+                            <td className="tl-tier-head" style={{ backgroundColor: this.props.tierData.color, color: toHex(foregroundColor) }}>
                                 <span contentEditable={true} suppressContentEditableWarning={true} className="tl-tier-name" onKeyDown={this.nameFieldKeyPressCb.bind(this)} data-placeholder={langConfig.appControls.tierNamePlaceholder} onBlur={this.nameInput.bind(this)}>
                                     {this.props.tierData.tierName}
                                 </span>
@@ -152,14 +100,13 @@ class TierRow extends React.Component <{
                                 {(provided, snapshot) => (
                                     <div
                                         ref={provided.innerRef}
-                                        style={{ display: "inline-block" /*getListStyle(snapshot.isDraggingOver)*/ }} >
+                                        style={{ display: "inline-block", verticalAlign: "top", /*getListStyle(snapshot.isDraggingOver)*/ }} >
                                             
                                         {
                                             this.props.tierData.items.map((item, index) => {
+                                                
                                                 return (
-                                                    <li key={item.uid}>
-                                                        <TierListItem index={index} item={item} />
-                                                    </li>
+                                                    <TierListItem key={item.uid} index={index} item={item} />
                                                 )
                                             })
                                         }
@@ -169,11 +116,9 @@ class TierRow extends React.Component <{
                                 )}
                             </Droppable>
                             <td>
-                                <ul className="tl-tier">
-                                    <li>
-                                        <div className="tl-tier-filler"></div>
-                                    </li>
-                                </ul>
+                                <div className="tl-tier">
+                                    <div className="tl-tier-filler"></div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -207,7 +152,7 @@ class UnsortedTierRow extends React.Component <{
                                 </span>
                             </td>
                             <td>
-                                <ul className="tl-tier">
+                                <div className="tl-tier">
                                     <Droppable droppableId={this.props.droppableID} direction="horizontal">
                                         {(provided, snapshot) => (
                                             <div
@@ -217,9 +162,7 @@ class UnsortedTierRow extends React.Component <{
                                                 {
                                                     this.props.tierItems.map((item, index) => {
                                                         return (
-                                                            <li key={item.uid}>
-                                                                <TierListItem index={index} item={item} />
-                                                            </li>
+                                                            <TierListItem key={item.uid} index={index} item={item} />
                                                         )
                                                     })
                                                 }
@@ -229,17 +172,13 @@ class UnsortedTierRow extends React.Component <{
                                         )}
                                     </Droppable>
 
-                                    <li>
-                                        <TierButton buttonData={{
-                                            name: langConfig.appControls.addEntry,
-                                            icon: staticAssets.img.menuIcons.addEntry,
-                                            callback: this.props.addRowItemCallback
-                                        }}/>
-                                    </li>
-                                    <li>
-                                        <div className="tl-tier-filler"></div>
-                                    </li>
-                                </ul>
+                                    <TierButton buttonData={{
+                                        name: langConfig.appControls.addEntry,
+                                        icon: staticAssets.img.menuIcons.addEntry,
+                                        callback: this.props.addRowItemCallback
+                                    }}/>
+                                    <div className="tl-tier-filler"></div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

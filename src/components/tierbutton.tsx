@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes, { object } from 'prop-types';
 
 import '../less/tierbutton.less'
 
