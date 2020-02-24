@@ -6,7 +6,8 @@ enum ActionType
     MOVE_ROW_UP,
     MOVE_ROW_DOWN,
     CREATE_ITEM_BIN,
-    TRANSFER_ITEM
+    TRANSFER_ITEM,
+    JOE_MUM_GAY
 }
 
 export { ActionType };
