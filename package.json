@@ -1,6 +1,6 @@
 {
   "name": "tierlister",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "A tier list editor written with React and Redux.",
   "repository": {
     "type": "git",
