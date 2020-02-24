@@ -39,7 +39,9 @@ class AddItemModal extends React.Component<{
     addItemCallBack: Function
 }, {
     modalIsOpen: boolean
-    itemThumbnail?: string | ArrayBuffer
+    itemName?: string,
+    itemThumbnail?: string,
+    itemLink? : string
 }>
 {
     constructor(props)
@@ -81,8 +83,9 @@ class AddItemModal extends React.Component<{
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        // TODO: Find a way to prevent the linter from screaming at me
         this.setState({
-            [name]: value
+            [name]: value 
         });
     }
 
@@ -92,7 +95,7 @@ class AddItemModal extends React.Component<{
         const reader = new FileReader();
       
         reader.addEventListener("load", () => {
-            var imageData = reader.result;
+            var imageData = reader.result as string;
 
             this.setState({
                 itemThumbnail: imageData
@@ -108,7 +111,7 @@ class AddItemModal extends React.Component<{
 
     processSubmit(event)
     {
-        this.props.addItemCallBack(this.state["itemName"], this.state["itemThumbnail"], this.state["itemLink"]);
+        this.props.addItemCallBack(this.state.itemName, this.state.itemThumbnail, this.state.itemLink);
         
         event.preventDefault();
         this.closeModal();
@@ -137,7 +140,7 @@ class AddItemModal extends React.Component<{
                             <div className="tl-modal-field">
                                 <label>{langConfig.appControls.modals.addModal.itemThumbnail}</label><br />
                                 <input className="tl-modal-input" type="file" onChange={this.handleThumbnailUpload.bind(this)} /><br />
-                                <img src={this.state["itemThumbnail"]} className="tl-modal-thumbnail" alt=""></img>
+                                <img src={this.state.itemThumbnail} className="tl-modal-thumbnail" alt=""></img>
                             </div>
 
                             <div className="tl-modal-field">
