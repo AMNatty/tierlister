@@ -38,7 +38,7 @@ const customStyles = {
 class AddItemModal extends React.Component<{
     addItemCallBack: Function
 }, {
-    modalIsOpen: boolean
+    modalIsOpen?: boolean,
     itemName?: string,
     itemThumbnail?: string,
     itemLink? : string
@@ -77,21 +77,20 @@ class AddItemModal extends React.Component<{
         });
     }
 
-    handleInputChange(event)
+    handleInputChange(event: Event)
     {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+        const target = event.target as HTMLInputElement;
+        const value: string | boolean = target.type === 'checkbox' ? target.checked : target.value;
+        const name: string = target.name;
 
-        // TODO: Find a way to prevent the linter from screaming at me
         this.setState({
             [name]: value 
         });
     }
 
-    handleThumbnailUpload(event)
+    handleThumbnailUpload(event: Event)
     {
-        const file = event.target.files[0];
+        const file = (event.target as HTMLInputElement).files[0];
         const reader = new FileReader();
       
         reader.addEventListener("load", () => {
