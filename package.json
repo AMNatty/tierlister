@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@types/react-dom": "^16.9.5",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "core-js": "^2.6.11",
     "rc-color-picker": "^1.2.6",
     "react-beautiful-dnd": "^12.2.0",
